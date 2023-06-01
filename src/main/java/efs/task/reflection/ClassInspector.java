@@ -50,16 +50,20 @@ public class ClassInspector {
   public static Collection<String> getAllDeclaredMethods(final Class<?> type) {
     Set<String> declaredMethods = new HashSet<>();
     Method[] methods = type.getDeclaredMethods();
+
     for (Method method : methods) {
       declaredMethods.add(method.getName());
     }
+    
     Class<?>[] interfaces = type.getInterfaces();
     for (Class<?> anInterface : interfaces) {
       Method[] interfaceMethods = anInterface.getDeclaredMethods();
+    
       for (Method interfaceMethod : interfaceMethods) {
         declaredMethods.add(interfaceMethod.getName());
       }
     }
+    
     return declaredMethods;
   }
 
@@ -84,8 +88,10 @@ public class ClassInspector {
    */
   public static <T> T createInstance(final Class<T> type, final Object... args) throws Exception {
     Constructor<T>[] cons = (Constructor<T>[]) type.getDeclaredConstructors();
+    
     for (Constructor<T> constructor : cons) {
       if (constructor.getParameterCount() == args.length) {
+    
         boolean instance = true;
         for (int i = 0; i < args.length; i++) {
           if (!constructor.getParameterTypes()[i].isInstance(args[i])) {
@@ -93,12 +99,15 @@ public class ClassInspector {
             break;
           }
         }
+    
         if (instance) {
           constructor.setAccessible(true);
+    
           return constructor.newInstance(args);
         }
       }
     }
+    
     throw new Exception("No matching constructor found");
   }
 }
